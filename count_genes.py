@@ -18,16 +18,18 @@ def get_args():
     return args
 
 
-def main():
+def count_genes(bamFile):
     args = get_args()
     count_cmd = "htseq-count -f bam -s yes -i gene_id {0} {1} > {2}/{3}_htseq-count.txt"
-    bam = glob('{0}/*.bam'.format(args["bam"]))
+    outFile = basename(bamFile).split('.')[0]
+    r(count_cmd.format(bamFile, args["gtf"],
+                       args["output"], outFile), shell=True)
+    return bamFile
 
-    def count_genes(bamFile):
-        outFile = basename(bamFile).split('.')[0]
-        r(count_cmd.format(bamFile, args["gtf"],
-                           args["output"], outFile), shell=True)
-        return bamFile
+
+def main():
+    args = get_args()
+    bam = glob('{0}/*.bam'.format(args["bam"]))
 
     # Make references dir
     if not exists(args["output"]):

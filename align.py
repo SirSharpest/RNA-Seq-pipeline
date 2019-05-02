@@ -4,7 +4,7 @@ from os import cpu_count
 from os.path import exists as exists
 from os import makedirs as mkdir
 import argparse
-from os import basename
+from os.path import basename
 
 
 def run_alignment(reference, inFile, outDir, outFile):
@@ -39,8 +39,8 @@ def get_args():
 
 
 def main():
-    args = get_args
-    fastq = glob('{0}*.fastq').format(args['fastq'])
+    args = get_args()
+    fastq = glob('{0}*.fastq'.format(args['fastq']))
     total = len(fastq)
     if not exists(args["output"]):
         mkdir(args["output"])
