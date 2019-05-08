@@ -1,5 +1,6 @@
 from subprocess import run as r
-cores = 2
+from os import cpu_count
+cores = cpu_count()
 # Index reference genome
 hisat_dir = "mkdir -p ./Reference/hisat2_index"
 r(hisat_dir.split())
