@@ -7,12 +7,17 @@ import argparse
 from os.path import basename
 
 
-def run_alignment(reference, inFile, outDir, outFile):
-    cmd = "hisat2 -x {0} -U {1} -p {2}| samtools view -bh - | samtools sort - > {3}/{4}.bam"
-    sh = cmd.format(reference, inFile, cpu_count(), outDir, outFile)
+def run_alignment(reference, inFile, outDir, outFile, inFileR=None):
+    if inFileR is not None:
+        cmd = "hisat2 -x {0} -1 {1} -2 {2} -p {3} | samtools view -bh - | samtools sort - > {4}/{5}.bam"
+        sh = cmd.format(reference, inFile, inFileR,
+                        cpu_count(), outDir, outFile)
+    else:
+        cmd = "hisat2 -x {0} -U {1} -p {2} | samtools view -bh - | samtools sort - > {3}/{4}.bam"
+        sh = cmd.format(reference, inFile, cpu_count(), outDir, outFile)
     print(sh)
     r(sh, shell=True)
-    run_index(inFile)
+    run_index("{0}/{1}.bam".format(outDir, outFile))
 
 
 def index_all(startDir):
@@ -30,6 +35,10 @@ def get_args():
     ap = argparse.ArgumentParser()
     ap.add_argument("-f", "--fastq", required=True,
                     help="FASTQ files location")
+    ap.add_argument("-F", "--forward", required=False,
+                    help="FASTQ Forward files ID")
+    ap.add_argument("-R", "--reverse", required=False,
+                    help="FASTQ files reverse ID")
     ap.add_argument("-r", "--reference", required=True,
                     help="Reference index file(s)")
     ap.add_argument("-o", "--output", required=True,
@@ -40,14 +49,34 @@ def get_args():
 
 def main():
     args = get_args()
-    fastq = glob('{0}*.fastq'.format(args['fastq']))
-    total = len(fastq)
-    if not exists(args["output"]):
-        mkdir(args["output"])
-    for idx, f in enumerate(fastq):
-        print('{0} of {1}'.format(idx, total))
-        fname = basename(f).split('.')[0]
-        run_alignment(args['reference'], f, args['output'], fname)
+
+    if 'forward' in args:
+        f_files = glob(
+            "{0}/*{1}.fq.gz".format(args['fastq'], args['forward']))
+        r_files = glob(
+            "{0}/*{1}.fq.gz".format(args['fastq'], args['reverse']))
+        if len(f_files) == 0:
+            f_files = glob(
+                "{0}/*{1}.fastq".format(args['fastq'], args['forward']))
+            r_files = glob(
+                "{0}/*{1}.fastq".format(args['fastq'], args['reverse']))
+        f_files.sort()
+        r_files.sort()
+
+        if not exists(args["output"]):
+            mkdir(args["output"])
+
+            for f, rv in zip(f_files, r_files):
+                fname = basename(f).split('.')[0]
+                run_alignment(args['reference'], f,
+                              args['output'], fname, inFileR=rv)
+    else:
+        fastq = glob("{0}/*.fastq")
+        if len(fastq) == 0:
+            fastq = glob("{0}/*.fq.gz")
+        for f in fastq:
+            fname = basename(f).split('.')[0]
+            run_alignment(args['reference'], f, args['output'], fname)
 
 
 if __name__ == '__main__':

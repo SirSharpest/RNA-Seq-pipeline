@@ -3,6 +3,8 @@ from subprocess import run as run
 from os.path import basename
 from glob import glob
 import argparse
+from os.path import exists as exists
+from os import makedirs as mkdir
 
 
 def get_args():
@@ -19,7 +21,7 @@ def get_args():
                     help="Adaptors to use")
     ap.add_argument("-i", "--identifier", required=True,
                     help="forward identifier")
-    ap.add_argument("-I", "--identiferR", required=True,
+    ap.add_argument("-I", "--identifierR", required=True,
                     help="reverse identifier")
 
     args = vars(ap.parse_args())
@@ -29,14 +31,23 @@ def get_args():
 def main():
     args = get_args()
     threads = cpu_count()
-    f_files = glob("{0}/{1}*".format(args['forward'], args['identifier']))
-    r_files = glob("{0}/{1}*".format(args['reverse'], args['identifierR']))
+    f_files = glob(
+        "{0}/*{1}.fq.gz".format(args['forward'], args['identifier']))
+    r_files = glob(
+        "{0}/*{1}.fq.gz".format(args['reverse'], args['identifierR']))
 
+    f_files.sort()
+    r_files.sort()
     adaptors = args["adaptors"]
+    if not exists(args["FORWARDOUT"]):
+        mkdir(args["FORWARDOUT"])
+    if not exists(args["REVERSEOUT"]):
+        mkdir(args["REVERSEOUT"])
+
     for f, r in zip(f_files, r_files):
         out_f = "{0}/trimmed_{1}".format(args['FORWARDOUT'], basename(f))
         out_r = "{0}/trimmed_{1}".format(args['REVERSEOUT'], basename(r))
-        cmd = "srun java -jar '/nbi/software/testing/trimmomatic/0.33/x86_64/bin/trimmomatic-0.33.jar' PE -threads {4} \
+        cmd = "srun java -jar '/nbi/software/testing/trimmomatic/0.33/x86_64/bin/trimmomatic-0.33.jar' PE -threads {5} \
              -phred33 {0} {1} {2} {3} ILLUMINACLIP:{4}:2:30:10 LEADING:3 TRAILING:3 SLIDINGWINDOW:4:15 MINLEN:36".format(f, r,
                                                                                                                          out_f, out_r,
                                                                                                                          adaptors, threads)

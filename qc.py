@@ -21,12 +21,12 @@ def main():
     if not exists(args["output"]):
         mkdir(args["output"])
 
-    runFastQC = "fastqc -o {0} {1}/*.fastq -t {2}".format(
+    runFastQC = "fastqc -o {0} {1}/*.fq.gz -t {2}".format(
         args['output'], args['fastq'], cpu_count())
-    runMultiQC = "multiqc {0}".format(args['output'])
+    runMultiQC = "multiqc {0} -n {0}/report.html".format(args['output'])
 
     r(runFastQC, shell=True)
-    r(runMultiQC.split())
+    r(runMultiQC, shell=True)
     print('Done')
 
 
