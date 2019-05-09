@@ -1,4 +1,11 @@
 * Usage instructions
+Firstly, install required libraries - for the python libs that I've used in my analysis you can just run this, however it installs more than what is needed:
+
+#+BEGIN_SRC bash
+pip install ./requirements.txt
+#+END_SRC
+
+
 
 Obviously the variables being used for locations and such will need changed
 
