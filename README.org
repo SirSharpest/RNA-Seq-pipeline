@@ -1,18 +1,17 @@
-#!/bin/bash
-#SBATCH --job-name="RNA-seq Alignment"
-#SBATCH --output=RNA-seq-analysis.txt
-#SBATCH --partition=jic-medium
-#SBATCH --cpus-per-task=30
-#SBATCH --mem 200G
-#SBATCH --mail-type=END,FAIL
-#SBATCH --mail-user=nathan.hughes@jic.ac.uk
+* Usage instructions
 
-source python-3.5.1
-source /hpc-home/hughesn/Transcriptomics/bin/activate
-source hisat2-2.1.0
-source samtools-1.5
-source htseq-0.9.1
-source fastqc-0.11.3
+Obviously the variables being used for locations and such will need changed
+
+** If you have access to an HPC running slurm
+
+#+BEGIN_SRC bash
+chmod +x ./run_HPC_analysis.sh
+./run_HPC_analysis.sh
+#+END_SRC
+
+** Else
+
+#+BEGIN_SRC bash
 
 FASTQ="../arabidopsis_thaliana/seedling_data/raw/raw_data/"
 FASTQ_R="../arabidopsis_thaliana/seedling_data/raw/raw_data/"
@@ -48,3 +47,6 @@ python3 ./align.py -f $FASTQ -r $INDEX -o $BAM -F $FORWARD_I -R $REVERSE_I
 
 # bam -> counts
 python3 ./count_genes.py -b $BAM -g $GTF -o $HTSEQ_COUNT
+
+
+#+END_SRC
