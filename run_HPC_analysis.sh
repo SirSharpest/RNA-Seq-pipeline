@@ -26,7 +26,7 @@ INDEX="../arabidopsis_thaliana/Reference/hisat2_index/arabidopsis.hisat2"
 BAM="../arabidopsis_thaliana/seedling_data/bam"
 GTF="../arabidopsis_thaliana/Reference/Arabidopsis_thaliana.TAIR10.43.gtf"
 HTSEQ_COUNT="../arabidopsis_thaliana/seedling_data/htseq-count"
-ADAPTORS="novogene.fa"
+ADAPTORS="universal.fa
 
 
 echo "Running pre qc"

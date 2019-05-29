@@ -30,7 +30,7 @@ def get_args():
 
 def main():
     args = get_args()
-    threads = cpu_count()
+    threads = int(cpu_count()) - 1
     f_files = glob(
         "{0}/*{1}.fq.gz".format(args['forward'], args['identifier']))
     r_files = glob(
@@ -47,10 +47,10 @@ def main():
     for f, r in zip(f_files, r_files):
         out_f = "{0}/trimmed_{1}".format(args['FORWARDOUT'], basename(f))
         out_r = "{0}/trimmed_{1}".format(args['REVERSEOUT'], basename(r))
-        cmd = "srun java -jar '/nbi/software/testing/trimmomatic/0.33/x86_64/bin/trimmomatic-0.33.jar' PE -threads {5} \
-             -phred33 {0} {1} {2} {3} ILLUMINACLIP:{4}:2:30:10 LEADING:3 TRAILING:3 SLIDINGWINDOW:4:15 MINLEN:36".format(f, r,
-                                                                                                                         out_f, out_r,
-                                                                                                                         adaptors, threads)
+        cmd = "java -jar '/Users/hughesn/Softwares/Trimmomatic-0.39/trimmomatic-0.39.jar' PE -threads {5} \
+             -phred33 {0} {1} {2} unpaired_1.fa.gz  {3} unpaired_2.fa.gz ILLUMINACLIP:{4}:2:30:10 LEADING:3 TRAILING:3 SLIDINGWINDOW:4:15 MINLEN:36".format(f, r,
+                                                                                                                                                            out_f, out_r,
+                                                                                                                                                            adaptors, threads)
         run(cmd, shell=True)
 
 

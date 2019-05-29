@@ -9,7 +9,8 @@ def get_args():
     ap = argparse.ArgumentParser()
     ap.add_argument("-f", "--fastq", required=True,
                     help="FASTQ files location")
-    ap.add_argument("-o", "--output", required=True, help="Output Folder")
+    ap.add_argument("-o", "--output", required=True,
+                    help="Output Folder")
 
     args = vars(ap.parse_args())
     return args
