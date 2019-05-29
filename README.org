@@ -5,6 +5,12 @@ Firstly, install required libraries - for the python libs that I've used in my a
 pip install ./requirements.txt
 #+END_SRC
 
+** Remember to install Trimmomatic
+E.g.
+#+BEGIN_SRC bash
+wget http://www.usadellab.org/cms/uploads/supplementary/Trimmomatic/Trimmomatic-0.39.zip
+unzip Trimmomatic*
+#+END_SRC
 
 
 Obviously the variables being used for locations and such will need changed

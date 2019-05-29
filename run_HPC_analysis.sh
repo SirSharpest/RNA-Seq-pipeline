@@ -26,25 +26,25 @@ INDEX="../arabidopsis_thaliana/Reference/hisat2_index/arabidopsis.hisat2"
 BAM="../arabidopsis_thaliana/seedling_data/bam"
 GTF="../arabidopsis_thaliana/Reference/Arabidopsis_thaliana.TAIR10.43.gtf"
 HTSEQ_COUNT="../arabidopsis_thaliana/seedling_data/htseq-count"
-ADAPTORS="universal.fa
-
+ADAPTORS="universal.fa"
+TRIMMOMATIC_NBI="/nbi/software/testing/trimmomatic/0.33/x86_64/bin/trimmomatic-0.33.jar"
 
 echo "Running pre qc"
 python3 ./qc.py -f $FASTQ -o $REPORTS
 
 #Perform adaptor removal
 echo "Adaptor trimming"
-python3 ./remove_adaptors.py -f ${FASTQ} -r ${FASTQ_R} -F ${FASTQ_O} -R ${FASTQ_O_R} -a ${ADAPTORS} -i ${FORWARD_I} -I ${REVERSE_I}
+python3 ./remove_adaptors.py -f ${FASTQ} -r ${FASTQ_R} -F ${FASTQ_O} -R ${FASTQ_O_R} -a ${ADAPTORS} -i ${FORWARD_I} -I ${REVERSE_I} -T ${TRIMMOMATIC_NBI}
 
 # Perform fastqc analysis
 # -> reports and multiqc report post trimming
 echo "Running post qc"
-python3 ./qc.py -f $FASTQ -o $TRIMMED_REPORTS
+python3 ./qc.py -f ${FASTQ} -o ${TRIMMED_REPORTS}
 
 # align the fastq to annotation
 # fastq -> bam
 echo "Performing align"
-python3 ./align.py -f $FASTQ -r $INDEX -o $BAM -F $FORWARD_I -R $REVERSE_I
+python3 ./align.py -f ${FASTQ} -r ${INDEX} -o ${BAM} -F ${FORWARD_I} -R ${REVERSE_I}
 
 # bam -> counts
-python3 ./count_genes.py -b $BAM -g $GTF -o $HTSEQ_COUNT
+python3 ./count_genes.py -b ${BAM} -g ${GTF} -o ${HTSEQ_COUNT}
