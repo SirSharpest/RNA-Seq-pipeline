@@ -46,6 +46,7 @@ def main():
     if not exists(args["REVERSEOUT"]):
         mkdir(args["REVERSEOUT"])
 
+    trimmomatic = args['Trimmomatic']
     for f, r in zip(f_files, r_files):
         out_f = "{0}/trimmed_{1}".format(args['FORWARDOUT'], basename(f))
         out_r = "{0}/trimmed_{1}".format(args['REVERSEOUT'], basename(r))

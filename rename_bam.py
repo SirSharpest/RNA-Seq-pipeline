@@ -1,6 +1,6 @@
 from os import rename
 from glob import glob as g
-rom get_sra_description import get_name
+from get_sra_description import get_name
 
 bams = g('./bam/*.bam')
 
